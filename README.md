@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# PalEx
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A paleography tool that helps with visualising characters, from a given COCO json format!
+
+![PalEx Illustration](./public/palex.png)
 
 ## Available Scripts
 
