@@ -12,15 +12,16 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-let node, nodee;
-let rotation = 0;
-let gestureStartRotation = 0;
-let gestureStartScale = 0;
+let node;
 let scale = 1;
 let posX = 0;
 let posY = 0;
-let startX;
-let startY;
+// let rotation = 0;
+// let nodee;
+// let gestureStartRotation = 0;
+// let gestureStartScale = 0;
+// let startX;
+// let startY;
 
 export function setScale(s){
     scale = s;
@@ -29,7 +30,7 @@ export function setScale(s){
 let render = () => {
     node = document.querySelector('.can');
 
-    nodee = document.querySelector('#canvasLayout');
+    // nodee = document.querySelector('#canvasLayout');
     // console.log(nodee);
 
     if(node) {
@@ -51,14 +52,12 @@ window.addEventListener('wheel', (e) => {
 
     document.body.style.zoom = 'normal';
 
-    let BB=document.querySelector('.can');
-
     // console.log(e.clientX,e.clientY);
     // console.log(e.movementX,e.offsetY);
     // let ratio = e.offsetX/e.offsetY;
     // console.log(ratio);
 
-    if (e.shiftKey == true) {
+    if (e.shiftKey === true) {
         // alert('disabling zooming');
     }
 

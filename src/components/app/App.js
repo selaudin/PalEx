@@ -1,6 +1,5 @@
 import * as React from 'react';
 import './App.css';
-import {Switch, Route, BrowserRouter as Router} from 'react-router';
 import Notfound from "../NotFound";
 import Index from "../pages/viewer";
 import homer32 from '../../coco.json';

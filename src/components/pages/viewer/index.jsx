@@ -1,9 +1,13 @@
-import React, {useEffect, useRef, useState, useReducer, useContext, createContext} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import CanvasCreator from "./CanvasCreator";
 import {Button} from "react-bootstrap";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Cliplet from "./Cliplet";
+import Test from "./TEST"
 
 function Index(props){
     let [file, setFile]= useState('');
@@ -31,9 +35,11 @@ function Index(props){
 
     let canvas = useRef(null);
     let width = props.getWidth();
+    let width2 = width/2;
     let height = props.getHeight();
+    let height2 = height/2;
 
-    useEffect(() => {
+     useEffect( () => {
         file = props.file;
         console.log(props.file);
 
@@ -176,84 +182,104 @@ function Index(props){
 
     return(
         <div >
-            <Container fluid="xl">
+            <Container fluid="xxl">
                 <h1 style={{textAlign: 'center'}}>PalEx</h1>
-                <Row>
-                    <Col sm={3} id='FirstLayout'>
-                        <h5>TM:</h5>
-                        <select id="TmSelect" onChange={onDropdownTMSelected}>
-                            <option>-- Select a TM --</option>
-                            {isActive && textList.map(text =>
-                                <option
-                                    key={text.label}
-                                    value={JSON.stringify(text.value)}
-                                    images={text.images}
-                                    tm={text.tm}
-                                >
-                                    {text.label}
-                                </option>
-                            )}
-                        </select>
-                        {isImageListActive &&
-                        <div>
-                            <h5>Select your image:</h5>
-                            <select id="mySelect" onChange={onDropdownSelected}>
-                                {/*<option>-- Select an image --</option>*/}
-                                {imageList.map(image =>
-                                    <option
-                                        key={image.label}
-                                        name={image.label}
-                                        width={image.width}
-                                        height={image.height}
-                                        value={JSON.stringify(image.value)}
-                                    >
-                                        {image.label}
-                                    </option>
-                                )}
-                            </select>
-                            <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}} onClick={onOptionSelectPrevious}>
-                                ←
-                            </Button>
-                            <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>
-                                →
-                            </Button>
-                        </div>
-                        }
-                        { isSelected &&
-                        <p>Click <a target='_blank' href={'https://papyri.info/dclp/'+externalLink} >HERE</a> for more info on the papyri!</p>
-                        }
-                        { isSelected &&
-                        <CanvasCreator
-                            getURL={props.getURL}
-                            getWidth={props.getWidth}
-                            getHeight={props.getHeight}
-                            getAnnotations={props.getAnnotations}
-                            getCategories={props.getCategories}
-                            external={'https://papyri.info/dclp/'+externalLink}
-                            getCanvas={canvas}
-                            getSelectedCategories={getSelectedCategories}
-                            changeSelectedCategories={changeSelectedCategories}
-                        />
-                        }
-                    </Col>
-                    { isSelected &&
-                    <Col sm={9} id='SecondLayout'>
-                        <div id='canvasLayout' className="Canvas" style={{
-                            height: window.innerHeight * 0.7,
-                            width: window.innerWidth / 1.5,
-                            overflow: 'scroll',
-                            border: 'solid',
-                            borderWidth: 'thin',
-                            display: 'none'
-                        }}>
-                            <canvas className="can canvas" ref={canvas} width={width} height={height}></canvas>
-                        </div>
-                        <span>
-                            <b>Hint:</b> Use SHIFT+scroll wheel to zoom in/out!
-                        </span>
-                    </Col>
-                    }
-                </Row>
+                <Tabs
+                    defaultActiveKey="profile"
+                    id="uncontrolled-tab-example"
+                    className="mb-3"
+                >
+                    <Tab eventKey="viewer" title="Viewer" style={{}}>
+                        <Row>
+                            <Col sm={2} id='FirstLayout'>
+                                <h5>TM:</h5>
+                                <select id="TmSelect" onChange={onDropdownTMSelected}>
+                                    <option>-- Select a TM --</option>
+                                    {isActive && textList.map(text =>
+                                        <option
+                                            key={text.label}
+                                            value={JSON.stringify(text.value)}
+                                            images={text.images}
+                                            tm={text.tm}
+                                        >
+                                            {text.label}
+                                        </option>
+                                    )}
+                                </select>
+                                {isImageListActive &&
+                                <div>
+                                    <h5>Select your image:</h5>
+                                    <select id="mySelect" onChange={onDropdownSelected}>
+                                        {/*<option>-- Select an image --</option>*/}
+                                        {imageList.map(image =>
+                                            <option
+                                                key={image.label}
+                                                name={image.label}
+                                                width={image.width}
+                                                height={image.height}
+                                                value={JSON.stringify(image.value)}
+                                            >
+                                                {image.label}
+                                            </option>
+                                        )}
+                                    </select>
+                                    <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}} onClick={onOptionSelectPrevious}>
+                                        ←
+                                    </Button>
+                                    <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>
+                                        →
+                                    </Button>
+                                </div>
+                                }
+                                { isSelected &&
+                                <p>Click <a target='_blank' href={'https://papyri.info/dclp/'+externalLink} >HERE</a> for more info on the papyri!</p>
+                                }
+                                { isSelected &&
+                                <CanvasCreator
+                                    getURL={props.getURL}
+                                    getWidth={props.getWidth}
+                                    getHeight={props.getHeight}
+                                    getAnnotations={props.getAnnotations}
+                                    getCategories={props.getCategories}
+                                    external={'https://papyri.info/dclp/'+externalLink}
+                                    getCanvas={canvas}
+                                    getSelectedCategories={getSelectedCategories}
+                                    changeSelectedCategories={changeSelectedCategories}
+                                />
+                                }
+                            </Col>
+                            { isSelected &&
+                            <Col sm={10} id='SecondLayout'>
+                                <div id='canvasLayout' className="Canvas" style={{
+                                    height: window.innerHeight * 0.7,
+                                    width: window.innerWidth / 1.5,
+                                    overflow: 'scroll',
+                                    border: 'solid',
+                                    borderWidth: 'thin',
+                                    display: 'none'
+                                }}>
+                                    <canvas className="can canvas" ref={canvas} width={width} height={height} style={{transform: 'translate3d('+width2+', '+height2+', 0px) scale(1)'}}></canvas>
+                                </div>
+                                <span>
+                                <b>Hint:</b> Use SHIFT+scroll wheel to zoom in/out!
+                            </span>
+                            </Col>
+                            }
+                        </Row>
+                    </Tab>
+                    <Tab eventKey="explorer" title="Explorer">
+                       <Cliplet
+                           getCategories={props.getCategories}
+                           getURL={props.getURL}
+                           getAnnotations={props.getAnnotations}
+                           getWidth={props.getWidth}
+                           getHeigh={props.getHeight}
+                       />
+                    </Tab>
+                    <Tab eventKey="tester" title="Test">
+                        <Test></Test>
+                    </Tab>
+                </Tabs>
             </Container>
         </div>
     )

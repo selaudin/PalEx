@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState, useReducer, useContext} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import {setScale} from "../../../index";
 
@@ -158,8 +158,8 @@ function CanvasCreator(props){
     // urll = 'https://app.d-scribes.philhist.unibas.ch/' + props.getURL();
     urll = 'http://localhost/' + props.getURL();
 
-    let width = props.getWidth();
-    let height = props.getHeight();
+    let width = props.getWidth()/2;
+    let height = props.getHeight()/2;
     let annotations =  props.getAnnotations();
     let categories = props.getCategories();
     let external = props.external;
@@ -179,12 +179,13 @@ function CanvasCreator(props){
     // when user changes TM, then reset the selected options
     useEffect(() => {
         let TMselect = document.getElementById('TmSelect');
-        console.log(TMselect);
+        // console.log(TMselect);
         TMselect.onchange = () => {
             setTempSelectedCat([]);
             let node = document.querySelector('.can'); // select the canvas
             if(node!=null){ // if it exists, then transform the scale to 1
-                node.setAttribute('style','transform: translate3d(0px, 0px, 0px) scale(1);');
+                node.setAttribute('style','transform: translate3d('+width+', '+height+', 0px) scale(1);');
+                console.log('transform: translate3d('+width+', '+height+', 0px) scale(1);');
                 setScale(1);
             }
         }
@@ -194,6 +195,7 @@ function CanvasCreator(props){
         // display the canvas
         let tempCanvas = document.getElementById("canvasLayout");
         tempCanvas.style.display = 'block';
+        tempCanvas.style.justifyContent = 'space-evenly';
 
         // change url
         categories = assignColorToCategory(categories, colors);
