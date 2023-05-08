@@ -5,23 +5,13 @@ import App from './components/app/App';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
-    ,
-  document.getElementById('root')
+    <App />, document.getElementById('root')
 );
 
 let node;
 let scale = 1;
 let posX = 0;
 let posY = 0;
-// let rotation = 0;
-// let nodee;
-// let gestureStartRotation = 0;
-// let gestureStartScale = 0;
-// let startX;
-// let startY;
 
 export function setScale(s){
     scale = s;
@@ -30,14 +20,7 @@ export function setScale(s){
 let render = () => {
     node = document.querySelector('.can');
 
-    // nodee = document.querySelector('#canvasLayout');
-    // console.log(nodee);
-
     if(node) {
-        // node.addEventListener('mouseover', function (e) {
-        //     alert('hello world');
-        // });
-
         window.requestAnimationFrame(() => {
             let val = `translate3D(${posX}px, ${posY}px, 0px) scale(${scale})`;
             node.style.transform = val;
@@ -46,19 +29,11 @@ let render = () => {
 }
 
 window.addEventListener('wheel', (e) => {
-    // e.preventDefault();
-    // console.clear();
-    // console.log(e);
 
     document.body.style.zoom = 'normal';
 
-    // console.log(e.clientX,e.clientY);
-    // console.log(e.movementX,e.offsetY);
-    // let ratio = e.offsetX/e.offsetY;
-    // console.log(ratio);
-
     if (e.shiftKey === true) {
-        // alert('disabling zooming');
+
     }
 
     if (e.shiftKey) {
@@ -69,28 +44,6 @@ window.addEventListener('wheel', (e) => {
     }
     render();
 });
-
-
-// window.addEventListener("gesturestart", function (e) {
-//     e.preventDefault();
-//     startX = e.pageX - posX;
-//     startY = e.pageY - posY;
-//     gestureStartRotation = rotation;
-//     gestureStartScale = scale;
-// });
-
-// window.addEventListener("gesturechange", function (e) {
-//     e.preventDefault();
-
-//     rotation = gestureStartRotation + e.rotation;
-//     scale = gestureStartScale * e.scale;
-
-//     posX = e.pageX - startX;
-//     posY = e.pageY - startY;
-
-//     render();
-
-// })
 
 window.addEventListener("gestureend", function (e) {
     e.preventDefault();

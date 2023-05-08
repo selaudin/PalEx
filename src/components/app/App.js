@@ -56,7 +56,7 @@ function App() {
     return (
         <div>
             <section id="mainContent">
-                <div style={{ fontFamily:'Verdana', padding: '20px 50px 0 50px', marginTop: '2.5%' , marginBottom: '2,5%'}}>
+                <div style={{ fontFamily:'Verdana', padding: '20px 20px 0 20px', marginTop: '1%' , marginBottom: '2%'}}>
                     <div style={{overflow: 'scroll', height: '100%'}}>
                     <Index
                         file={homer32}

@@ -1,12 +1,16 @@
 import React, {useRef, useEffect, useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import {setScale} from "../../../index";
+import MultiLayerCheckbox from "./MultiLayerCheckbox";
 
 function CanvasCreator(props){
     const [isLoaded, setIsLoaded] = useState(false);
     const [isPageLoaded, setIsPageLoaded] = useState(false);
-    let [urll, setUrl] = useState('');
+    let [url, setUrl] = useState('');
     var imageObj1 = new Image();
+    let [showAnnotations, setShowAnnotations] = useState(true);
+    const [buttonText, setButtonText] = useState('Hide All');
+
     const colors = [
         'aliceblue',
         'antiquewhite',
@@ -150,13 +154,32 @@ function CanvasCreator(props){
         'yellow',
         'yellowgreen'
     ];
+    let filters = {
+        "BaseType": [
+            "bt1",
+            "bt2",
+            "bt3",
+            "bt4",
+            "bt5",
+        ],
+        "FootMarkType": [
+            "ft1",
+            "ft2",
+            "ft3",
+            "ft4",
+            "ft5",
+            "ft6",
+            "ft7",
+            "ft8",
+            "ft9"
+        ]
+    }
 
-    // const canvas = useRef(null);
     let canvas = props.getCanvas;
     let ctx = null;
 
-    // urll = 'https://app.d-scribes.philhist.unibas.ch/' + props.getURL();
-    urll = 'http://localhost/' + props.getURL();
+    // url = 'https://app.d-scribes.philhist.unibas.ch/' + props.getURL();
+    url = 'http://localhost/' + props.getURL();
 
     let width = props.getWidth()/2;
     let height = props.getHeight()/2;
@@ -172,7 +195,7 @@ function CanvasCreator(props){
     // console.log("annotations: ", annotations);
     // console.log("categories: ", categories);
     // console.log("external: ", external);
-    // console.log("url: ", urll);
+    // console.log("url: ", url);
     // categories = assignColorToCategory(categories);
     // console.log("categories: ", categories);
 
@@ -183,7 +206,7 @@ function CanvasCreator(props){
         TMselect.onchange = () => {
             setTempSelectedCat([]);
             let node = document.querySelector('.can'); // select the canvas
-            if(node!=null){ // if it exists, then transform the scale to 1
+            if(node!=null){ // if canvas exists, then transform the scale back to 1
                 node.setAttribute('style','transform: translate3d('+width+', '+height+', 0px) scale(1);');
                 console.log('transform: translate3d('+width+', '+height+', 0px) scale(1);');
                 setScale(1);
@@ -199,14 +222,12 @@ function CanvasCreator(props){
 
         // change url
         categories = assignColorToCategory(categories, colors);
-        let cleanURL = 'http://localhost' + props.getURL().substring(1);
-        setUrl(cleanURL);
+        setUrl(url);
     }, []);
 
     useEffect(() => {
         // draw image
-        // setSelectedCategories([]); // clean the selected categories when changing the image
-        imageObj1.src = urll;
+        imageObj1.src = url;
         imageObj1.onload = function() {
             if(ctx == null){
                 ctx = canvas.current.getContext("2d");
@@ -224,16 +245,9 @@ function CanvasCreator(props){
         }
         setIsLoaded(false);
 
-        // reset the scale when image is changed
-        let node = document.querySelector('.can');
-        if(node!=null){
-            // node.setAttribute('style','transform: translate3d(0px, 0px, 0px) scale(1);');
-            // setScale(1);
-        }
-
-        setSelectedCategories([]);
+        setSelectedCategories([]); // clean the selected categories when changing the image
         return () => {console.log("second time disp") };
-    }, [urll]);
+    }, [url]);
 
 
     useEffect(() => {
@@ -245,7 +259,7 @@ function CanvasCreator(props){
             setSelectedCategories([]);
             console.log(selectedCategories[0]);
         }
-        else if(selectedCategories.length!==0){
+        else if(selectedCategories.length!==0){ // if there are selected categories, then render the selected categories
             // tempSelectedCat = selectedCategories; // save
             console.log('selectedCategories: ', selectedCategories);
             selectedCategories.forEach((cat) => {
@@ -287,7 +301,7 @@ function CanvasCreator(props){
             })
             console.log(tempSelectedCat, selectedCategories);
             setImageCategories(imageCategories);
-            displayImageCategories(imageCategories, categories, tempSelectedCat, onDropdownSelected, onSelectAll);
+            displayImageCategories(imageCategories, categories, tempSelectedCat, onDropdownSelected, onSelectAll, buttonText);
         }
         else{
             setImageCategories([]);
@@ -306,7 +320,7 @@ function CanvasCreator(props){
             })
             console.log(tempSelectedCat, selectedCategories);
             setImageCategories(imageCategories);
-            displayImageCategories(imageCategories, categories, tempSelectedCat, onDropdownSelected, onSelectAll);
+            displayImageCategories(imageCategories, categories, tempSelectedCat, onDropdownSelected, onSelectAll, buttonText);
         }
 
 
@@ -345,10 +359,21 @@ function CanvasCreator(props){
         e.preventDefault();
         setSelectedCategories([]);
         setTempSelectedCat([]);
+
+        if(showAnnotations==true){
+            setShowAnnotations(false);
+            setButtonText('Show All')
+            setIsLoaded(true);
+        }
+        else{
+            setShowAnnotations(true);
+            setButtonText('Hide All');
+        }
+
     }
 
     useEffect(()=>{
-        imageObj1.src = urll;
+        imageObj1.src = url;
         imageObj1.onload = function() {
             ctx = canvas.current.getContext("2d");
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -367,9 +392,17 @@ function CanvasCreator(props){
                 <div className="Categories">
                     <label htmlFor="lang">Categories</label>
                     <br/>
-                    <Form id="catt" className="mb-3" style={{border: 'solid'}}>
-                        <div id="catt" className="mb-3" />
+                    <Form id="catt" className="mb-2" style={{border: 'solid'}}>
+                        <div id="catt" className="mb-2" />
                     </Form>
+                    <br/>
+                </div>
+                <div className="Tags" style={{marginLeft: '5px'}}>
+                    <label>Tags</label>
+                    <div className="mb-2" style={{border: 'solid'}}>
+                        <MultiLayerCheckbox getFilters={filters}/>
+                    </div>
+                    <br/>
                     <br/>
                 </div>
             </div>
@@ -377,7 +410,7 @@ function CanvasCreator(props){
     );
 }
 
-function displayImageCategories(imageCategories, categories, selectedCategories, onDropdownSelected, onSelectAll){
+function displayImageCategories(imageCategories, categories, selectedCategories, onDropdownSelected, onSelectAll, buttonText){
     let test = [...new Set(imageCategories)];
     // console.log("Displaying the categories of the image!", test);
     // console.log("Selected categories, ", selectedCategories);
@@ -398,11 +431,21 @@ function displayImageCategories(imageCategories, categories, selectedCategories,
     label.setAttribute('for', 'selectAll');
     label.setAttribute('value', 0);
     label.setAttribute('style','background: white;')
-    label.innerText = "Show All";
+    label.innerText = buttonText;
     label.onclick = onSelectAll;
 
+    // Create input element that accepts interactions for selecting and deselecting all
+    let option = document.createElement('input');
+    option.setAttribute('class','');
+    option.onchange = onSelectAll;
+    option.setAttribute('type', 'checkbox');
+    option.innerText = "Hide All";
+
+    // div.appendChild(option);
     div.appendChild(label);
     selectEl.appendChild(div);
+
+    const objectWithNameC = categories.find(cat => cat.name === 'ϲ');
 
     categories.forEach((cat)=>{
         // Select the div to append the categories
@@ -413,10 +456,9 @@ function displayImageCategories(imageCategories, categories, selectedCategories,
 
         // Create label element that shows the letter
         let label = document.createElement('label');
-        label.setAttribute('for', cat.id);
         label.setAttribute('style','margin-left: 5px; margin-bottom: 0px;');
-        label.innerText = cat.name.toUpperCase();
-        if(cat.color=='black' || cat.color=='blue'){
+
+        if(cat.color=='black' || cat.color=='blue' || cat.color=='darkblue'){
             label.setAttribute('style','color: white; margin-left: 5px;');
         }
 
@@ -425,25 +467,43 @@ function displayImageCategories(imageCategories, categories, selectedCategories,
         optionn.setAttribute('class','');
         optionn.onchange = onDropdownSelected;
         optionn.setAttribute('type', 'checkbox');
-        optionn.setAttribute('id', cat.id);
-        optionn.setAttribute('label', cat.name);
-        optionn.innerText = cat.name;
+
+        if(cat.name=='σ'){
+            label.innerText = objectWithNameC.name.toUpperCase();
+            label.setAttribute('for', objectWithNameC.id);
+
+            optionn.innerText = objectWithNameC.name;
+            optionn.setAttribute('id', objectWithNameC.id);
+            optionn.setAttribute('label', objectWithNameC.name);
+        }
+        else{
+            label.setAttribute('for', cat.id);
+            label.innerText = cat.name.toUpperCase();
+
+            optionn.innerText = cat.name;
+            optionn.setAttribute('id', cat.id);
+            optionn.setAttribute('label', cat.name);
+        }
+
 
         let isCatPresent = false;
         test.forEach((imgcat)=>{
             if(imgcat.name==cat.name){
-                // console.log(imgcat.name, cat.name)
                 div.setAttribute('style', 'border: solid '+cat.color+'; background-color: '+cat.color);
                 isCatPresent=true
             }
+            else if(cat.name=='σ' && imgcat.name===objectWithNameC.name){
+                div.setAttribute('style', 'border: solid '+objectWithNameC.color+'; background-color: '+objectWithNameC.color);
+                isCatPresent=true
+            }
         })
-        if(isCatPresent==false){ //if a category is not part of the image, just gray it out
+        if(isCatPresent==false){ //if a category is not part of the image, just black it out
             // console.log(cat, " not part")
             div.setAttribute('style', 'border: solid black; background-color: black');
             label.setAttribute('style','color: white; margin-left: 5px;');
             optionn.setAttribute('disabled','');
+            optionn.setAttribute('style', ' -webkit-appearance: none; color: black');
         }
-
 
 
         // If category has been selected before, then make the category selected again on the next image
@@ -455,56 +515,20 @@ function displayImageCategories(imageCategories, categories, selectedCategories,
             }
         })
 
-        div.appendChild(optionn);
-        div.appendChild(label);
-        selectEll.appendChild(div);
+        if(cat.name!='ϲ') { // skip append of object c since we replaced 'σ' with 'ϲ' already
+            div.appendChild(optionn);
+            div.appendChild(label);
+            selectEll.appendChild(div);
+        }
     });
 }
 
 function assignColorToCategory(categories, colors){
-    // categories.forEach((category) => {
-    //     let value = category.name;
-    //     let hex = value.charCodeAt(0).toString(16);
-    //     if(hex.length===3){
-    //         hex = hex+'a';
-    //     }
-    //     else if(hex.length===2){
-    //         hex = hex+'aa';
-    //     }
-    //     console.log('F1'+hex);
-    //     category.color = '#'+hex+'13';  //generateRandomColor();
-    //     //category.color = generateRandomColor();
-    // })
-    // return categories;
-
     for(let i = 0; i < categories.length; i++) {
         categories[i].color = colors[i%140]; // %140 because there are 140 available colors
     }
     console.log(categories);
     return categories;
-}
-
-function Borders(info, style = {}) {
-    const { x, y, w, h } = info;
-    const { borderColor = 'black', borderWidth = 1 } = style;
-
-    const canvas = useRef();
-    const canvasEle = canvas.current;
-    let ctx = canvasEle.getContext("2d");
-    ctx.beginPath();
-    ctx.strokeStyle = borderColor;
-    ctx.lineWidth = borderWidth;
-    ctx.rect(x, y, w, h);
-    ctx.stroke();
-}
-
-function generateRandomColor(){
-    let maxVal = 0xFFFFFF; // 16777215
-    let randomNumber = Math.random() * maxVal;
-    randomNumber = Math.floor(randomNumber);
-    randomNumber = randomNumber.toString(16);
-    let randColor = randomNumber.padStart(6, 0);
-    return `#${randColor.toUpperCase()}`
 }
 
 export default CanvasCreator;
