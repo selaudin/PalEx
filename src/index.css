@@ -73,11 +73,13 @@ p {
 
 #TmSelect {
   width: -webkit-fill-available;
+  width: -moz-available;
 }
 
 #mySelect{
   /*width: inherit;*/
   width: -webkit-fill-available;
+  width: -moz-available;
 }
 
 /*select {*/
@@ -92,4 +94,14 @@ p {
 /*select, option:checked {*/
 /*  font-weight: bold;*/
 /*}*/
+
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+
+tbody td:nth-of-type(odd), thead th:nth-of-type(odd){ background:#f2f2f2; }
+
 

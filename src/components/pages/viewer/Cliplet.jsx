@@ -9,6 +9,7 @@ import CropImage from "./CropImage";
 
 function Cliplet(props){
     let categories = props.getCategories();
+    console.log(categories);
     // let categories = [
     //     {
     //         color: "aqua",
@@ -20,7 +21,7 @@ function Cliplet(props){
     let annotations = props.getAnnotations();
     let width = props.getWidth();
     let height = props.getHeigh();
-    let url = 'http://localhost/'+props.getURL();
+    let url = props.getURL();
     const [crop, setCrop] = useState({
         unit: 'px', // Can be 'px' or '%'
         x: 50,
@@ -40,7 +41,7 @@ function Cliplet(props){
     return(
         <div>
             <div className="wrapper">
-                <Table striped responsive className={'table-image'} size="lg">
+                <Table striped responsive className={'table-image'} size="lg" style={{position: 'absolute'}}>
                     <thead id="tableHead">
                         <tr>
                             <th>Categories</th>
@@ -58,14 +59,14 @@ function Cliplet(props){
                             <th>----</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
+                    <tbody id="tableBody" key={'cliplets'}>
                         {categories.map((cat) => (
-                            <tr>
-                                <td style={{padding: '1rem'}}>{cat.name}</td>
+                            <tr key={cat.name}>
+                                <td style={{padding: '1rem'}}>{cat.name.toUpperCase()}</td>
                                 {
                                     annotations.map((anno) => (
-                                        anno.category_id == cat.id &&
-                                        <td style={{paddingRight: '25px', paddingLeft: '25px', paddingBottom: '45px'}}>
+                                        anno.category_id === cat.id &&
+                                        <td style={{paddingRight: anno.bbox[2], paddingBottom: anno.bbox[3]}} key={anno.id}>
                                             <img style={{
                                                 position: 'absolute',
                                                 overflow: 'clip',
