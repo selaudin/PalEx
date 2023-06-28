@@ -1,6 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
 import Form from 'react-bootstrap/Form';
-// import {setScale} from "../../../index";
 import MultiLayerCheckbox from "./MultiLayerCheckbox";
 
 function CanvasCreator(props){
@@ -239,7 +238,6 @@ function CanvasCreator(props){
             setIsLoaded(true);
         }
         setIsLoaded(false);
-
         props.changeSelectedCategories([]); // clean the selected categories when changing the image
         return () => {console.log("second time disp") };
     }, [url]);
