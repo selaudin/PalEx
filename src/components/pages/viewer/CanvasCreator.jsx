@@ -1,6 +1,7 @@
 import React, {useRef, useEffect, useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import MultiLayerCheckbox from "./MultiLayerCheckbox";
+// import image from '../../../../public/images/test.jpeg'
 
 function CanvasCreator(props){
     const [isLoaded, setIsLoaded] = useState(false);
@@ -9,6 +10,8 @@ function CanvasCreator(props){
     const [buttonText, setButtonText] = useState('Hide All');
 
     const url = props.getURL();
+    console.log(url);
+    
     let imageObj1 = new Image();
     const colors = [
         'aliceblue',
@@ -181,7 +184,7 @@ function CanvasCreator(props){
     let annotations =  props.getAnnotations();
     let categories = props.getCategories();
     let selectedCategories = props.getSelectedCategories();
-    let selectedFilters = props.getSelectedFilters;
+    // let selectedFilters = props.getSelectedFilters;
     let [imageCategories, setImageCategories] = useState([]);
     let [tempSelectedCat, setTempSelectedCat]= useState([]); //create a var that stores the selectedCat
 
@@ -221,8 +224,9 @@ function CanvasCreator(props){
 
     useEffect(() => {
         // draw image
-        imageObj1.src = url;
+        imageObj1.src = `images/${url}`;
         imageObj1.onload = function() {
+            console.log('Image is accessible.');
             if(ctx == null){
                 ctx = canvas.current.getContext("2d");
                 // Use same handler for pointer{up,cancel,out,leave} events since
@@ -364,7 +368,7 @@ function CanvasCreator(props){
     }
 
     useEffect(()=>{
-        imageObj1.src = url;
+        imageObj1.src = `images/${url}`;
         imageObj1.onload = function() {
             ctx = canvas.current.getContext("2d");
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -388,7 +392,7 @@ function CanvasCreator(props){
                     </Form>
                     <br/>
                 </div>
-                <div className="Tags" style={{marginLeft: '5px', textAlign: 'center'}}>
+                <div className="Tags" style={{marginLeft: '5px', textAlign: 'center', display: 'none'}}>
                     <label>Tags</label>
                     <div className="mb-2" style={{border: 'solid'}}>
                         <MultiLayerCheckbox
