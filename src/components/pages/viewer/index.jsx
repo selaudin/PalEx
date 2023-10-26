@@ -84,42 +84,43 @@ function Index(props) {
         categories = file.categories;
         setCategories(file.categories);
 
-        texts = file.texts;
-        setTexts(file.texts);
+        // texts = file.texts;
+        // setTexts(file.texts);
 
         displayTMs();
     }, [])
 
     const displayTMs = () => {
-        texts.forEach((text) => {
-            textList.push({
-                label: text.txt_ckn,
-                value: text.txt_id,
-                images: text.txt_image_ids,
-                tm: text.tm
-            });
-        });
-
-        let textList2 = textList.sort((a, b) => a.tm - b.tm);
-        setTextList(textList2);
+        // texts.forEach((text) => {
+        //     textList.push({
+        //         label: text.txt_ckn,
+        //         value: text.txt_id,
+        //         images: text.txt_image_ids,
+        //         tm: text.tm
+        //     });
+        // });
+        //
+        // let textList2 = textList.sort((a, b) => a.tm - b.tm);
+        // setTextList(textList2);
         setActive(true);
+        displayImages()
     }
 
     const displayImages = (imagess) => {
         setImageList([]);
         imageList = [];
-        imagess.forEach((imagee) => {
+        // imagess.forEach((imagee) => {
             images.forEach((image) => {
-                if (imagee == image.id) {
+                // if (imagee == image.id) {
                     imageList.push({
                         label: image.file_name,
                         value: image.img_url,
                         width: image.width,
                         height: image.height
                     });
-                }
+                // }
             });
-        });
+        // });
         setImageList(imageList);
         setIsImageListActive(true);
         onDropdownSelected('nothing', imageList[0].value, imageList[0].width, imageList[0].height);
@@ -229,20 +230,20 @@ function Index(props) {
                     </Col>
                     <Collapse in={showContent} dimension="height">
                         <Col sm={2} id='FirstLayout'>
-                            <h5>TM:</h5>
-                            <select id="TmSelect" onChange={onDropdownTMSelected}>
-                                <option>-- Select a TM --</option>
-                                {isActive && textList.map(text =>
-                                    <option
-                                        key={text.label}
-                                        value={JSON.stringify(text.value)}
-                                        images={text.images}
-                                        tm={text.tm}
-                                    >
-                                        {text.label}
-                                    </option>
-                                )}
-                            </select>
+                            {/*<h5>TM:</h5>*/}
+                            {/*<select id="TmSelect" onChange={onDropdownTMSelected}>*/}
+                            {/*    <option>-- Select a TM --</option>*/}
+                            {/*    {isActive && textList.map(text =>*/}
+                            {/*        <option*/}
+                            {/*            key={text.label}*/}
+                            {/*            value={JSON.stringify(text.value)}*/}
+                            {/*            images={text.images}*/}
+                            {/*            tm={text.tm}*/}
+                            {/*        >*/}
+                            {/*            {text.label}*/}
+                            {/*        </option>*/}
+                            {/*    )}*/}
+                            {/*</select>*/}
                             {isImageListActive &&
                             <div>
                                 <h5>Select your image:</h5>

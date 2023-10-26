@@ -198,19 +198,19 @@ function CanvasCreator(props){
     // console.log("categories: ", categories);
 
     // when user changes TM, then reset the selected options
-    useEffect(() => {
-        let TMselect = document.getElementById('TmSelect');
-        // console.log(TMselect);
-        TMselect.onchange = () => {
-            setTempSelectedCat([]);
-            let node = document.querySelector('.can'); // select the canvas
-            if(node!=null){ // if canvas exists, then transform the scale back to 1
-                node.setAttribute('style','transform: translate3d('+width+', '+height+', 0px) scale(1);');
-                console.log('transform: translate3d('+width+', '+height+', 0px) scale(1);');
-                // setScale(1);
-            }
-        }
-    }, []);
+    // useEffect(() => {
+    //     let TMselect = document.getElementById('TmSelect');
+    //     // console.log(TMselect);
+    //     TMselect.onchange = () => {
+    //         setTempSelectedCat([]);
+    //         let node = document.querySelector('.can'); // select the canvas
+    //         if(node!=null){ // if canvas exists, then transform the scale back to 1
+    //             node.setAttribute('style','transform: translate3d('+width+', '+height+', 0px) scale(1);');
+    //             console.log('transform: translate3d('+width+', '+height+', 0px) scale(1);');
+    //             // setScale(1);
+    //         }
+    //     }
+    // }, []);
 
     useEffect(() => {
         // display the canvas

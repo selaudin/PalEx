@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.css';
 import Notfound from "../NotFound";
 import Index from "../pages/viewer";
-import homer32 from '../../predictions.json';
+import homer32 from '../../predictions2.json';
 
 function App() {
     const [curURL, setCurURL] = React.useState(null);
