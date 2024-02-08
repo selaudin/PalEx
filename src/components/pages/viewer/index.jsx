@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Cliplet4 from "./Cliplet4";
+import Select from "react-select";
 
 
 function Index(props) {
@@ -84,82 +85,83 @@ function Index(props) {
         categories = file.categories;
         setCategories(file.categories);
 
-        texts = file.texts;
-        setTexts(file.texts);
-
-        displayTMs();
+        displayImages(images);
+        setIsImageListActive(true);
     }, [])
 
-    const displayTMs = () => {
-        texts.forEach((text) => {
-            textList.push({
-                label: text.txt_ckn,
-                value: text.txt_id,
-                images: text.txt_image_ids,
-                tm: text.tm
-            });
-        });
-
-        let textList2 = textList.sort((a, b) => a.tm - b.tm);
-        setTextList(textList2);
-        setActive(true);
+    function extractConsecutiveDigits(input) {
+        let matches = input.match(/\d+/g);
+        if (matches) {
+            return matches[0];
+        }
     }
 
-    const displayImages = (imagess) => {
-        setImageList([]);
-        imageList = [];
-        imagess.forEach((imagee) => {
-            images.forEach((image) => {
-                if (imagee == image.id) {
-                    imageList.push({
-                        label: image.file_name,
-                        value: image.img_url,
-                        width: image.width,
-                        height: image.height
-                    });
-                }
+    const displayImages = (images) => {
+        console.log('images:', images);
+        images.forEach((image) => {
+            let extractedTM = extractConsecutiveDigits(image.file_name);
+            imageList.push({
+                id: image.id,
+                label: image.file_name,
+                value: image.img_url,
+                width: image.width,
+                height: image.height,
+                tm: extractedTM
             });
         });
         setImageList(imageList);
-        setIsImageListActive(true);
-        onDropdownSelected('nothing', imageList[0].value, imageList[0].width, imageList[0].height);
+        // onDropdownSelected('nothing', imageList[0].value, imageList[0].width, imageList[0].height, imageList[0].tm);
     }
 
     let onDropdownTMSelected = (e) => {
         e.preventDefault();
-        setSelectedCategories([]);
-        setIsSelected(false);
+        // setSelectedCategories([]);
+        // setIsSelected(false);
 
         const selectedOptions = Array.from(e.target.selectedOptions);
-        const selectedTMIDs = selectedOptions.map(option => JSON.parse(option.value));
-        console.log('selected TM IDs:', selectedTMIDs);
+        // const selectedTMIDs = selectedOptions.map(option => JSON.parse(option.value));
+        // console.log('selected TM IDs:', selectedTMIDs);
 
         const selectedImages = selectedOptions.flatMap(option => option.getAttribute('images').match(/\d+/g));
         console.log('selected images:', selectedImages);
         displayImages(selectedImages);
 
+        // Try to get the TM, so we can link it with the external link for papyri.info
         const selectedTMs = selectedOptions.map(option => option.getAttribute('tm'));
         console.log('selected TMs:', selectedTMs);
         setExternalLink(selectedTMs[0]);
     }
 
-    let onDropdownSelected = (e, img, width, height) => {
-        if (e.type == 'change') {
-            if (e.target.value !== '') {
-                img = JSON.parse(e.target.value);
-                //console.log('Image selected:', img);
-                width = e.target.options[e.target.selectedIndex].getAttribute('width');
-                // console.log('Width selected:', width);
-                height = e.target.options[e.target.selectedIndex].getAttribute('height');
-                // console.log('Height selected:', height);
-            }
-        } else if (img && width && height != null) {
-            console.log("done");
-        } else {
-            img = JSON.parse(e.getAttribute('value'));
-            width = e.getAttribute('width');
-            height = e.getAttribute('height');
-        }
+    let onDropdownSelected = (e) => {
+        // if (e.type == 'change') {
+        //     if (e.target.value !== '') {
+        //         img = JSON.parse(e.target.value);
+        //         //console.log('Image selected:', img);
+        //         width = e.target.options[e.target.selectedIndex].getAttribute('width');
+        //         // console.log('Width selected:', width);
+        //         height = e.target.options[e.target.selectedIndex].getAttribute('height');
+        //         // console.log('Height selected:', height);
+        //         tm = e.target.options[e.target.selectedIndex].getAttribute('tm');
+        //     }
+        // } else if (img && width && height != null) {
+        //     console.log("done");
+        // } else {
+        //     img = JSON.parse(e.getAttribute('value'));
+        //     width = e.getAttribute('width');
+        //     height = e.getAttribute('height');
+        //     tm = e.getAttribute('tm');
+        // }
+
+        let id = e.id;
+        let img = JSON.parse(e.value);  // when I json parse, the rendering stops!
+        let width = e.width;
+        let height = e.height;
+        let tm = e.tm;
+        console.log("e: ",  e)
+        // console.log('Image selected:', JSON.parse(img));
+        console.log('Width selected:', width);
+        console.log('Height selected:', height);
+        console.log('TM selected:', tm);
 
         props.OnUrlChange(img);
         props.changeHeight(height);
@@ -167,10 +169,10 @@ function Index(props) {
         props.changeCategories(categories);
 
         // get the image object with all properties from the json file
-        images.map((imagee) => {
-            if (img == imagee.img_url) {
-                selectedImage = imagee;
-                setSelectedImage(imagee);
+        images.map((image) => {
+            if (id === image.id) {
+                selectedImage = image;
+                setSelectedImage(image);
             }
         });
         console.log('selected image: ', selectedImage);
@@ -184,9 +186,15 @@ function Index(props) {
                 tmp.push(annotation);
             }
         });
+        console.log('annotations:', tmp);
         imageAnnotations = tmp;
         setImageAnnotations(tmp);
         props.changeAnnotations(tmp);
+
+        // Try to get the TM, so we can link it with the external link for papyri.info
+
+        console.log('selected TMs:', tm);
+        setExternalLink(tm);
     }
 
     let onOptionSelectPrevious = (e) => {
@@ -216,7 +224,7 @@ function Index(props) {
             <Container fluid="xxxl">
                 <h1 style={{textAlign: 'center'}}>PalEx</h1>
                 <Row>
-                    <Col sm={1} style={{display: 'flex', justifyContent: 'center', width: 'auto'}}>
+                    <Col sm={2} style={{display: 'flex', justifyContent: 'center', width: 'auto'}}>
                         <button
                             type="button"
                             className="btn btn-primary"
@@ -229,51 +237,36 @@ function Index(props) {
                     </Col>
                     <Collapse in={showContent} dimension="height">
                         <Col sm={2} id='FirstLayout'>
-                            <h5>TM:</h5>
-                            <select id="TmSelect" onChange={onDropdownTMSelected}>
-                                <option>-- Select a TM --</option>
-                                {isActive && textList.map(text =>
-                                    <option
-                                        key={text.label}
-                                        value={JSON.stringify(text.value)}
-                                        images={text.images}
-                                        tm={text.tm}
-                                    >
-                                        {text.label}
-                                    </option>
-                                )}
-                            </select>
                             {isImageListActive &&
                             <div>
                                 <h5>Select your image:</h5>
-                                <select id="mySelect" onChange={onDropdownSelected}>
-                                    {/*<option>-- Select an image --</option>*/}
-                                    {imageList.map(image =>
-                                        <option
-                                            key={image.label}
-                                            name={image.label}
-                                            width={image.width}
-                                            height={image.height}
-                                            value={JSON.stringify(image.value)}
-                                        >
-                                            {image.label}
-                                        </option>
-                                    )}
-                                </select>
-                                <span style={{display: 'block'}}>
-                                    <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}}
-                                            onClick={onOptionSelectPrevious}>
-                                        ←
-                                    </Button>
-                                    <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>
-                                        →
-                                    </Button>
-                                </span>
+                                <Select
+                                    id="mySelect"
+                                    options={imageList.map(image => ({
+                                        id: image.id,
+                                        label: image.label,
+                                        value: JSON.stringify(image.value),
+                                        width: image.width,
+                                        height: image.height,
+                                        tm: image.tm
+                                    }))}
+                                    onChange={onDropdownSelected}
+                                    placeholder="-- Search for an image --"
+                                />
+                                {/*<span style={{display: 'block'}}>*/}
+                                {/*    <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}}*/}
+                                {/*            onClick={onOptionSelectPrevious}>*/}
+                                {/*        ←*/}
+                                {/*    </Button>*/}
+                                {/*    <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>*/}
+                                {/*        →*/}
+                                {/*    </Button>*/}
+                                {/*</span>*/}
                             </div>
                             }
                             {isSelected &&
                             <p style={{fontSize: '12px'}}>
-                                Click <a target='_blank' href={'https://papyri.info/dclp/' + externalLink}>HERE</a>
+                                Click <a target='_blank' href={'https://www.trismegistos.org/text/' + externalLink}>HERE</a>
                                 for more info on the papyri!
                             </p>
                             }
@@ -295,7 +288,7 @@ function Index(props) {
                         </Col>
                     </Collapse>
                     {isSelected &&
-                    <Col sm={9} id='SecondLayout'>
+                    <Col sm={8} id='SecondLayout'>
                         <Tabs style={{position: ""}}
                               defaultActiveKey="viewer"
                               id="uncontrolled-tab-example"

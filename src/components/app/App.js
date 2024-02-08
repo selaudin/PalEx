@@ -2,7 +2,7 @@ import * as React from 'react';
 import './App.css';
 import Notfound from "../NotFound";
 import Index from "../pages/viewer";
-import homer32 from '../../coco.json';
+import cocoFile from '../../coco-homer32-localcode3-new.json';
 
 function App() {
     const [curURL, setCurURL] = React.useState(null);
@@ -57,9 +57,9 @@ function App() {
         <div>
             <section id="mainContent">
                 <div style={{ fontFamily:'Verdana', padding: '20px 20px 0 20px', marginTop: '1%' , marginBottom: '2%'}}>
-                    <div style={{overflow: 'scroll', height: '100%'}}>
+                    <div style={{height: '100%'}}>
                     <Index
-                        file={homer32}
+                        file={cocoFile}
                         getURL={getURL}
                         getHeight={getHeight}
                         getWidth={getWidth}
