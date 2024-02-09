@@ -177,6 +177,7 @@ function App() {
                                             {currentFile && <Index
                                                 {...props} // Pass down route props
                                                 fileNameURLParam={filePathURLParam}
+                                                fileNameURLParam1={filePathURLParam}
                                                 imageIdURLParam={imageIdURLParam}
                                                 file={currentFile}
                                                 getURL={getURL}

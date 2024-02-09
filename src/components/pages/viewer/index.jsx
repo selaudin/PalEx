@@ -111,7 +111,7 @@ function Index(props) {
                 onDropdownSelected(img, false);
             }
         }
-    },[])
+    },[fileNameURL])
 
     function extractConsecutiveDigits(input) {
         let matches = input.match(/\d+/g);
