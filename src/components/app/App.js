@@ -16,6 +16,7 @@ function App() {
     const [categories, setCategories] = React.useState([]);
     const [file, setFile] = useState(null);
     const [currentFile, setCurrentFile] = useState('');
+    const [currentFileName, setCurrentFileName] = useState('');
 
     useEffect(() => {
         if (file) {
@@ -31,7 +32,7 @@ function App() {
     useEffect(() => {
         const fetchFile = async (id) => {
             try {
-                const response = await fetch(`../${id}.json`);
+                const response = await fetch(`../../${id}.json`);
                 console.log(response);
                 const fileData = await response.json();
                 setCurrentFile(fileData);
@@ -40,9 +41,9 @@ function App() {
             }
         };
 
-        // Get the filename parameter from the URL
         const { pathname } = window.location;
-        const filename = pathname.split('/').pop(); // Get the last part of the URL path
+        const parts = pathname.split('/');
+        const filename = parts[parts.indexOf('palex') + 1]; // Access the filename after "palex"
         if (filename) {
             fetchFile(filename);
         }
@@ -95,6 +96,9 @@ function App() {
         if (e.target.files) {
             setCurrentFile('');
             setFile(e.target.files[0]);
+            const fileName = e.target.files[0].name;
+            const fileNameWithoutExtension = fileName.replace('.json', '');
+            setCurrentFileName(fileNameWithoutExtension);
         }
     };
 
@@ -141,6 +145,7 @@ function App() {
                                         <br/>
                                         {currentFile && <Index
                                             {...props} // Pass down route props
+                                            fileNameURLParam = {currentFileName}
                                             file={currentFile}
                                             getURL={getURL}
                                             getHeight={getHeight}
@@ -157,10 +162,11 @@ function App() {
                                 )}}
                             />
                             <Route
+                                exact={true}
                                 path="/palex/:filePathURLParam"
                                 render={(props) => {
                                     const { filePathURLParam } = props.match.params; // Access the id parameter from the URL
-                                    // console.log(filePathURLParam);
+                                    const { imageIdURLParam } = props.match.params; // Access the id parameter from the URL
                                     return (
                                         <div>
                                             <h1 style={{textAlign: 'center'}}>PalEx</h1>
@@ -171,6 +177,41 @@ function App() {
                                             {currentFile && <Index
                                                 {...props} // Pass down route props
                                                 fileNameURLParam={filePathURLParam}
+                                                imageIdURLParam={imageIdURLParam}
+                                                file={currentFile}
+                                                getURL={getURL}
+                                                getHeight={getHeight}
+                                                getWidth={getWidth}
+                                                getAnnotations={getAnnotations}
+                                                getCategories={getCategories}
+                                                OnUrlChange={OnUrlChange}
+                                                changeWidth={changeWidth}
+                                                changeHeight={changeHeight}
+                                                changeAnnotations={changeAnnotations}
+                                                changeCategories={changeCategories}
+                                            />}
+                                        </div>
+                                    )}}
+                            />
+                            <Route
+                                exact={true}
+                                path="/palex/:filePathURLParam/:imageIdURLParam"
+                                render={(props) => {
+                                    const { filePathURLParam } = props.match.params; // Access the id parameter from the URL
+                                    const { imageIdURLParam } = props.match.params; // Access the id parameter from the URL
+                                    return (
+                                        <div>
+                                            <h1 style={{textAlign: 'center'}}>PalEx</h1>
+                                            <div>
+                                                <input id="file" type="file" onChange={handleFileChange}/>
+                                            </div>
+                                            <br/>
+                                            {currentFile && <Index
+                                                {...props} // Pass down route props
+                                                history={props.history} // Pass history object as a prop
+                                                fileNameURLParam={currentFileName}
+                                                fileNameURLParam1={filePathURLParam}
+                                                imageIdURLParam={imageIdURLParam}
                                                 file={currentFile}
                                                 getURL={getURL}
                                                 getHeight={getHeight}

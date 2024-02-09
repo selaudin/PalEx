@@ -50,10 +50,17 @@ function Index(props) {
     });
     let [showContent, setShowContent] = useState(true);
     let [fileNameURL, setFileNameURL] = useState(props.fileNameURLParam);
-    // let [imageIdUrl, setImageIdUrl] = useState(props.imageIdURLParam);
+    let [imageIdUrl, setImageIdUrl] = useState(props.imageIdURLParam);
 
-    // console.log('filePathURLParam:', fileNameURL);
-    // console.log('imageIdURLParam:', imageIdUrl);
+    // If we dont have the file name from the uploaded file then we get it from the URL
+    useEffect(() => {
+        if (!fileNameURL) {
+            setFileNameURL(props.fileNameURLParam1);
+        }
+    },[])
+
+    console.log('filePathURLParam:', fileNameURL);
+    console.log('imageIdURLParam:', imageIdUrl);
 
     const changeSelectedCategories = (newSet) => {
         setSelectedCategories(newSet);
@@ -93,6 +100,18 @@ function Index(props) {
         displayImages(images);
         setIsImageListActive(true);
     }, [props.file])
+
+    useEffect(() => {
+        if (fileNameURL && imageIdUrl) {
+            console.log('fileNameURL:', fileNameURL);
+            console.log('imageIdUrl:', imageIdUrl);
+            let img = images.find(image => image.id == imageIdUrl);
+            console.log('img:', img);
+            if(img){
+                onDropdownSelected(img, false);
+            }
+        }
+    },[])
 
     function extractConsecutiveDigits(input) {
         let matches = input.match(/\d+/g);
@@ -137,39 +156,30 @@ function Index(props) {
         setExternalLink(selectedTMs[0]);
     }
 
-    let onDropdownSelected = (e, image) => {
-        // if (e.type == 'change') {
-        //     if (e.target.value !== '') {
-        //         img = JSON.parse(e.target.value);
-        //         //console.log('Image selected:', img);
-        //         width = e.target.options[e.target.selectedIndex].getAttribute('width');
-        //         // console.log('Width selected:', width);
-        //         height = e.target.options[e.target.selectedIndex].getAttribute('height');
-        //         // console.log('Height selected:', height);
-        //         tm = e.target.options[e.target.selectedIndex].getAttribute('tm');
-        //     }
-        // } else if (img && width && height != null) {
-        //     console.log("done");
-        // } else {
-        //     img = JSON.parse(e.getAttribute('value'));
-        //     width = e.getAttribute('width');
-        //     height = e.getAttribute('height');
-        //     tm = e.getAttribute('tm');
-        // }
-
-
-        let id = e.id;
+    let onDropdownSelected = (e, jsonparse=true) => {
         console.log("e.value", e.value)
         // let img = JSON.parse(e.value);  // when I json parse, the rendering stops!
-        let img = JSON.parse(e.value);
+        let img = ''
+        if(!jsonparse){
+            img = e.img_url;
+        }else{
+            img = JSON.parse(e.value);
+        }
+
+        let id = e.id;
         let width = e.width;
         let height = e.height;
         let tm = e.tm;
         console.log("e: ",  e);
+        console.log('ImageID selected:', id);
         console.log('Image selected:', img);
         console.log('Width selected:', width);
         console.log('Height selected:', height);
         console.log('TM selected:', tm);
+
+        // redirect to route that ends with the image id
+        // window.location.href = '/palex/' + fileNameURL + '/' + id;
+        props.history.push(`/palex/${fileNameURL}/${id}`);
 
         props.OnUrlChange(img);
         props.changeHeight(height);

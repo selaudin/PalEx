@@ -8,8 +8,8 @@ function CanvasCreator(props){
     const [isPageLoaded, setIsPageLoaded] = useState(false);
     const [showAnnotations, setShowAnnotations] = useState(true);
     const [buttonText, setButtonText] = useState('Hide All');
-    const [key, setKey] = useState(0); // Initialize key state
-    console.log("key: ", key);
+    // const [key, setKey] = useState(0); // Initialize key state
+    // console.log("key: ", key);
 
     const url = props.getURL();
     let imageObj1 = new Image();
