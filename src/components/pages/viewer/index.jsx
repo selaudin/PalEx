@@ -49,6 +49,11 @@ function Index(props) {
         }
     });
     let [showContent, setShowContent] = useState(true);
+    let [fileNameURL, setFileNameURL] = useState(props.fileNameURLParam);
+    // let [imageIdUrl, setImageIdUrl] = useState(props.imageIdURLParam);
+
+    // console.log('filePathURLParam:', fileNameURL);
+    // console.log('imageIdURLParam:', imageIdUrl);
 
     const changeSelectedCategories = (newSet) => {
         setSelectedCategories(newSet);
