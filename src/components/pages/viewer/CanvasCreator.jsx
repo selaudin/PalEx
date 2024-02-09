@@ -3,10 +3,13 @@ import Form from 'react-bootstrap/Form';
 import MultiLayerCheckbox from "./MultiLayerCheckbox";
 
 function CanvasCreator(props){
+    const file = props.getFile;
     const [isLoaded, setIsLoaded] = useState(false);
     const [isPageLoaded, setIsPageLoaded] = useState(false);
     const [showAnnotations, setShowAnnotations] = useState(true);
     const [buttonText, setButtonText] = useState('Hide All');
+    const [key, setKey] = useState(0); // Initialize key state
+    console.log("key: ", key);
 
     const url = props.getURL();
     let imageObj1 = new Image();
@@ -189,7 +192,6 @@ function CanvasCreator(props){
     // console.log("height: ", height);
     // console.log("annotations: ", annotations);
     // console.log("categories: ", categories);
-    // console.log("external: ", external);
     // console.log("url: ", url);
     // categories = assignColorToCategory(categories);
     // console.log("categories: ", categories);
@@ -205,7 +207,7 @@ function CanvasCreator(props){
                 // setScale(1);
             }
         }
-    }, []);
+    }, [file]);
 
     useEffect(() => {
         // display the canvas
@@ -215,7 +217,7 @@ function CanvasCreator(props){
 
         // change url
         categories = assignColorToCategory(categories, colors);
-    }, []);
+    }, [file]);
 
     useEffect(() => {
         // draw image

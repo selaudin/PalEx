@@ -12,7 +12,7 @@ import Select from "react-select";
 
 
 function Index(props) {
-    let [file, setFile] = useState('');
+    let [file, setFile] = useState(props.file);
     let [images, setImages] = useState([]); // array of all images
     let [annotations, setAnnotations] = useState([]);
     let [categories, setCategories] = useState([]);
@@ -74,7 +74,7 @@ function Index(props) {
 
     useEffect(() => {
         file = props.file;
-        console.log(props.file);
+        console.log('file', props.file);
 
         annotations = file.annotations;
         setAnnotations(file.annotations);
@@ -87,7 +87,7 @@ function Index(props) {
 
         displayImages(images);
         setIsImageListActive(true);
-    }, [])
+    }, [props.file])
 
     function extractConsecutiveDigits(input) {
         let matches = input.match(/\d+/g);
@@ -110,10 +110,10 @@ function Index(props) {
             });
         });
         setImageList(imageList);
-        // onDropdownSelected('nothing', imageList[0].value, imageList[0].width, imageList[0].height, imageList[0].tm);
+        // onDropdownSelected(imageList[0], imageList[0].value);
     }
 
-    let onDropdownTMSelected = (e) => {
+    let onDropdownTMSelected = (e, image) => {
         e.preventDefault();
         // setSelectedCategories([]);
         // setIsSelected(false);
@@ -132,7 +132,7 @@ function Index(props) {
         setExternalLink(selectedTMs[0]);
     }
 
-    let onDropdownSelected = (e) => {
+    let onDropdownSelected = (e, image) => {
         // if (e.type == 'change') {
         //     if (e.target.value !== '') {
         //         img = JSON.parse(e.target.value);
@@ -152,13 +152,16 @@ function Index(props) {
         //     tm = e.getAttribute('tm');
         // }
 
+
         let id = e.id;
-        let img = JSON.parse(e.value);  // when I json parse, the rendering stops!
+        console.log("e.value", e.value)
+        // let img = JSON.parse(e.value);  // when I json parse, the rendering stops!
+        let img = JSON.parse(e.value);
         let width = e.width;
         let height = e.height;
         let tm = e.tm;
-        console.log("e: ",  e)
-        // console.log('Image selected:', JSON.parse(img));
+        console.log("e: ",  e);
+        console.log('Image selected:', img);
         console.log('Width selected:', width);
         console.log('Height selected:', height);
         console.log('TM selected:', tm);
@@ -197,135 +200,116 @@ function Index(props) {
         setExternalLink(tm);
     }
 
-    let onOptionSelectPrevious = (e) => {
-        e.preventDefault();
-        let select = document.getElementById('mySelect');
-        if (select.selectedIndex > 0) {
-            select.selectedIndex -= 1;
-            select.value = select.options[select.selectedIndex].value;
-            let element = select.options[select.selectedIndex];
-            onDropdownSelected(element);
-        }
-    }
-
-    let onOptionSelectNext = (e) => {
-        e.preventDefault();
-        let select = document.getElementById('mySelect');
-        if (select.selectedIndex < select.childElementCount - 1) {
-            select.selectedIndex += 1;
-            select.value = select.options[select.selectedIndex].value;
-            let element = select.options[select.selectedIndex];
-            onDropdownSelected(element);
-        }
-    }
-
     return (
         <div>
-            <Container fluid="xxxl">
-                <h1 style={{textAlign: 'center'}}>PalEx</h1>
-                <Row>
-                    <Col sm={2} style={{display: 'flex', justifyContent: 'center', width: 'auto'}}>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => setShowContent(!showContent)}
-                            aria-controls="collapse-toolbar"
-                            aria-expanded={showContent}
-                        >
-                            ←/→
-                        </button>
-                    </Col>
-                    <Collapse in={showContent} dimension="height">
-                        <Col sm={2} id='FirstLayout'>
-                            {isImageListActive &&
-                            <div>
-                                <h5>Select your image:</h5>
-                                <Select
-                                    id="mySelect"
-                                    options={imageList.map(image => ({
-                                        id: image.id,
-                                        label: image.label,
-                                        value: JSON.stringify(image.value),
-                                        width: image.width,
-                                        height: image.height,
-                                        tm: image.tm
-                                    }))}
-                                    onChange={onDropdownSelected}
-                                    placeholder="-- Search for an image --"
-                                />
-                                {/*<span style={{display: 'block'}}>*/}
-                                {/*    <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}}*/}
-                                {/*            onClick={onOptionSelectPrevious}>*/}
-                                {/*        ←*/}
-                                {/*    </Button>*/}
-                                {/*    <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>*/}
-                                {/*        →*/}
-                                {/*    </Button>*/}
-                                {/*</span>*/}
-                            </div>
-                            }
-                            {isSelected &&
-                            <p style={{fontSize: '12px'}}>
-                                Click <a target='_blank' href={'https://www.trismegistos.org/text/' + externalLink}>HERE</a>
-                                for more info on the papyri!
-                            </p>
-                            }
-                            {isSelected &&
-                            <CanvasCreator
-                                getURL={props.getURL}
-                                getWidth={props.getWidth}
-                                getHeight={props.getHeight}
-                                getAnnotations={props.getAnnotations}
-                                getCategories={props.getCategories}
-                                external={'https://papyri.info/dclp/' + externalLink}
-                                getCanvas={canvas}
-                                getSelectedCategories={getSelectedCategories}
-                                changeSelectedCategories={changeSelectedCategories}
-                                getSelectedFilters={getSelectedFilters}
-                                changeSelectedFilters={changeSelectedFilters}
-                            />
-                            }
+            {file &&
+                <Container fluid="xxxl">
+                    {/*<h1 style={{textAlign: 'center'}}>PalEx</h1>*/}
+                    <Row>
+                        <Col sm={2} style={{display: 'flex', justifyContent: 'center', width: 'auto'}}>
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => setShowContent(!showContent)}
+                                aria-controls="collapse-toolbar"
+                                aria-expanded={showContent}
+                            >
+                                ←/→
+                            </button>
                         </Col>
-                    </Collapse>
-                    {isSelected &&
-                    <Col sm={8} id='SecondLayout'>
-                        <Tabs style={{position: ""}}
-                              defaultActiveKey="viewer"
-                              id="uncontrolled-tab-example"
-                              className="mb-3"
-                        >
-                            <Tab eventKey="viewer" title="Viewer" style={{}}>
-                                <div id='canvasLayout' className="Canvas" style={{
-                                    height: window.innerHeight * 0.8,
-                                    width: 'max-content',
-                                    overflow: 'scroll',
-                                    border: 'solid',
-                                    borderWidth: 'thin',
-                                    display: 'none'
-                                }}>
-                                    <canvas className="can canvas" ref={canvas} width={width} height={height}
-                                            style={{transform: 'translate3d(' + width2 + ', ' + height2 + ', 0px) scale(1)'}}></canvas>
-                                </div>
-                                <span>
+                        <Collapse in={showContent} dimension="height">
+                            <Col sm={2} id='FirstLayout'>
+                                {isImageListActive &&
+                                    <div>
+                                        <h5>Select your image:</h5>
+                                        <Select
+                                            id="mySelect"
+                                            options={imageList.map(image => ({
+                                                id: image.id,
+                                                label: image.label,
+                                                value: JSON.stringify(image.value),
+                                                width: image.width,
+                                                height: image.height,
+                                                tm: image.tm
+                                            }))}
+                                            onChange={onDropdownSelected}
+                                            placeholder="-- Search for an image --"
+                                            maxMenuHeight={700}
+                                        />
+                                        {/*<span style={{display: 'block'}}>*/}
+                                        {/*    <Button size="sm" style={{cursor: 'pointer', marginLeft: '5px', marginRight: '2px'}}*/}
+                                        {/*            onClick={onOptionSelectPrevious}>*/}
+                                        {/*        ←*/}
+                                        {/*    </Button>*/}
+                                        {/*    <Button size="sm" style={{cursor: 'pointer'}} onClick={onOptionSelectNext}>*/}
+                                        {/*        →*/}
+                                        {/*    </Button>*/}
+                                        {/*</span>*/}
+                                    </div>
+                                }
+                                {isSelected &&
+                                    <p style={{fontSize: '12px'}}>
+                                        Click <a target='_blank' href={'https://www.trismegistos.org/text/' + externalLink}>HERE</a>
+                                        for more info on the papyri!
+                                    </p>
+                                }
+                                {isSelected &&
+                                    <CanvasCreator
+                                        getFile={file}
+                                        getURL={props.getURL}
+                                        getWidth={props.getWidth}
+                                        getHeight={props.getHeight}
+                                        getAnnotations={props.getAnnotations}
+                                        getCategories={props.getCategories}
+                                        getCanvas={canvas}
+                                        getSelectedCategories={getSelectedCategories}
+                                        changeSelectedCategories={changeSelectedCategories}
+                                        getSelectedFilters={getSelectedFilters}
+                                        changeSelectedFilters={changeSelectedFilters}
+                                    />
+                                }
+                            </Col>
+                        </Collapse>
+                        {isSelected &&
+                            <Col sm={8} id='SecondLayout'>
+                                <Tabs style={{position: ""}}
+                                      defaultActiveKey="viewer"
+                                      id="uncontrolled-tab-example"
+                                      className="mb-3"
+                                >
+                                    <Tab eventKey="viewer" title="Viewer" style={{}}>
+                                        <div id='canvasLayout' className="Canvas" style={{
+                                            height: window.innerHeight * 0.8,
+                                            width: 'max-content',
+                                            overflow: 'scroll',
+                                            border: 'solid',
+                                            borderWidth: 'thin',
+                                            display: 'none'
+                                        }}>
+                                            <canvas className="can canvas" ref={canvas} width={width} height={height}
+                                                    style={{transform: 'translate3d(' + width2 + ', ' + height2 + ', 0px) scale(1)'}}></canvas>
+                                        </div>
+                                        <span>
                                     <b>Hint:</b> Use SHIFT+scroll wheel to zoom in/out!
                                 </span>
-                            </Tab>
-                            <Tab eventKey="explorer4" title="Explorer">
-                                <Cliplet4
-                                    getSelectedFilters={getSelectedFilters}
-                                    getSelectedCategories={getSelectedCategories}
-                                    getCategories={props.getCategories}
-                                    getURL={props.getURL}
-                                    getAnnotations={props.getAnnotations}
-                                    getWidth={props.getWidth}
-                                    getHeigh={props.getHeight}
-                                />
-                            </Tab>
-                        </Tabs>
-                    </Col>
-                    }
-                </Row>
-            </Container>
+                                    </Tab>
+                                    <Tab eventKey="explorer4" title="Explorer">
+                                        <Cliplet4
+                                            getSelectedFilters={getSelectedFilters}
+                                            getSelectedCategories={getSelectedCategories}
+                                            getCategories={props.getCategories}
+                                            getURL={props.getURL}
+                                            getAnnotations={props.getAnnotations}
+                                            getWidth={props.getWidth}
+                                            getHeigh={props.getHeight}
+                                        />
+                                    </Tab>
+                                </Tabs>
+                            </Col>
+                        }
+                    </Row>
+                </Container>
+            }
         </div>
     )
 };
