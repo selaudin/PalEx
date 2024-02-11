@@ -1,12 +1,12 @@
 import * as React from 'react';
 import './App.css';
-import Notfound from "../NotFound";
 import Index from "../pages/viewer";
 // import cocoFile from '../../coco-homer32-3-new.json';
 // import cocoFile from '../../coco.json';
 import {useEffect, useState} from "react";
 import {BrowserRouter, BrowserRouter as Router, Route, useParams} from 'react-router-dom';
 import CanvasCreator from "../pages/viewer/CanvasCreator";
+import NotFound from "../pages/viewer/NotFound.jsx";
 
 function App() {
     const [curURL, setCurURL] = React.useState(null);
@@ -18,17 +18,19 @@ function App() {
     const [currentFile, setCurrentFile] = useState('');
     const [currentFileName, setCurrentFileName] = useState('');
 
+    // JSON parse the input file
     useEffect(() => {
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setCurrentFile(JSON.parse(e.target.result));
-                CanvasCreator.setKey(prevKey => prevKey + 1);
+                // CanvasCreator.setKey(prevKey => prevKey + 1);
             }
             reader.readAsText(file);
         }
     }, [file]); // Add currentFile as a dependency
 
+    // Fetch the filename from the URL and load the file locally
     useEffect(() => {
         const fetchFile = async (id) => {
             try {
@@ -108,6 +110,7 @@ function App() {
                 <div style={{fontFamily: 'Verdana', padding: '20px 20px 0 20px', marginTop: '1%', marginBottom: '2%'}}>
                     <div style={{height: '100%'}}>
                         <BrowserRouter>
+                            <Route component={NotFound} path='/notfound'/>
                             <Route
                                 exact
                                 path="/"
