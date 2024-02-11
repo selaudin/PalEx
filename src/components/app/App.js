@@ -5,7 +5,7 @@ import Index from "../pages/viewer";
 // import cocoFile from '../../coco-homer32-3-new.json';
 // import cocoFile from '../../coco.json';
 import {useEffect, useState} from "react";
-import {BrowserRouter, BrowserRouter as Router, Route, useParams} from 'react-router-dom';
+import { HashRouter as BrowserRouter, Route, useParams } from 'react-router-dom';
 import CanvasCreator from "../pages/viewer/CanvasCreator";
 
 function App() {
@@ -32,7 +32,8 @@ function App() {
     useEffect(() => {
         const fetchFile = async (id) => {
             try {
-                const response = await fetch(`../../${id}.json`);
+                console.log("trying to fetch file...");
+                const response = await fetch(`${process.env.PUBLIC_URL}/${id}.json`);
                 console.log(response);
                 const fileData = await response.json();
                 setCurrentFile(fileData);
@@ -41,12 +42,16 @@ function App() {
             }
         };
 
-        const { pathname } = window.location;
-        const parts = pathname.split('/');
-        const filename = parts[parts.indexOf('palex') + 1]; // Access the filename after "palex"
+        const { hash } = window.location;
+        const parts = hash.split('/');
+        console.log(parts);
+        const filenameIndex = parts.indexOf('#palex') + 3; // Access the filename after "#palex"
+        const filename = filenameIndex !== -1 ? parts[filenameIndex] : null;
+        console.log(filename);
         if (filename) {
             fetchFile(filename);
         }
+
     }, []); // Run once on component mount
 
 
@@ -126,7 +131,7 @@ function App() {
                                                 To get started, simply upload a COCO JSON file with annotations.
                                             </p>
                                             <p>
-                                                <a href="/palex">Go to PalEx</a>
+                                                <a href="#/palex">Go to PalEx</a>
                                             </p>
                                         </div>
                                     </div>
